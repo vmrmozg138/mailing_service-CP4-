@@ -1,0 +1,71 @@
+{% extends 'mailing_service/base.html' %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-8">
+
+            <h1 class="mb-4">
+                Статистика рассылок
+            </h1>
+
+            <div class="row g-4">
+
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm rounded-4 h-100">
+                        <div class="card-body p-4 text-center">
+
+                            <div class="fs-1 fw-bold text-success">
+                                {{ statistics.successful }}
+                            </div>
+
+                            <div class="text-muted">
+                                Успешных попыток
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm rounded-4 h-100">
+                        <div class="card-body p-4 text-center">
+
+                            <div class="fs-1 fw-bold text-danger">
+                                {{ statistics.failed }}
+                            </div>
+
+                            <div class="text-muted">
+                                Неуспешных попыток
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm rounded-4 h-100">
+                        <div class="card-body p-4 text-center">
+
+                            <div class="fs-1 fw-bold text-primary">
+                                {{ statistics.successful }}
+                            </div>
+
+                            <div class="text-muted">
+                                Отправленных сообщений
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,118 @@
+{% extends 'mailing_service/base.html' %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Мои рассылки</h1>
+
+        <a
+            href="{% url 'mailing_service:distribution_create' %}"
+            class="btn btn-primary"
+        >
+            Создать рассылку
+        </a>
+    </div>
+
+    {% if distributions %}
+
+        {% for distribution in distributions %}
+
+            <div class="card border-0 shadow-sm rounded-4 mb-4">
+                <div class="card-body p-4">
+
+                    <h3 class="mb-3">
+                        {{ distribution.message.message_topic }}
+                    </h3>
+
+                    <p>
+                        <strong>Начало:</strong>
+                        {{ distribution.start_time }}
+                    </p>
+
+                    <p>
+                        <strong>Окончание:</strong>
+                        {{ distribution.end_time }}
+                    </p>
+
+                    <p>
+                        <strong>Статус:</strong>
+                        {{ distribution.get_status_display }}
+                    </p>
+
+                    <hr>
+
+                    <div class="row text-center">
+
+                        <div class="col-md-4">
+                            <div class="fs-4 fw-bold">
+                                {{ distribution.total_attempts }}
+                            </div>
+                            <div class="text-muted">
+                                Всего отправок
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="fs-4 fw-bold text-success">
+                                {{ distribution.successful_attempts }}
+                            </div>
+                            <div class="text-muted">
+                                Успешных
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="fs-4 fw-bold text-danger">
+                                {{ distribution.failed_attempts }}
+                            </div>
+                            <div class="text-muted">
+                                Неуспешных
+                            </div>
+                        </div>
+
+                    </div>
+
+                    {% if user.is_manager and distribution.is_active %}
+                        <hr>
+
+                        <form
+                            method="post"
+                            action="{% url 'mailing_service:distribution_disable' distribution.pk %}"
+                        >
+                            {% csrf_token %}
+
+                            <button
+                                type="submit"
+                                class="btn btn-outline-danger btn-sm"
+                            >
+                                Отключить рассылку
+                            </button>
+                        </form>
+                    {% endif %}
+
+                    {% if not distribution.is_active %}
+                        <hr>
+
+                        <span class="badge text-bg-secondary">
+                            Рассылка отключена
+                        </span>
+                    {% endif %}
+
+                </div>
+            </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <div class="alert alert-info">
+            У вас пока нет рассылок.
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}
