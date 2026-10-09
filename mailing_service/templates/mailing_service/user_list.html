@@ -1,0 +1,113 @@
+{% extends 'mailing_service/base.html' %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-9">
+
+            <h1 class="mb-4">
+                Пользователи сервиса
+            </h1>
+
+            <div class="card border-0 shadow-sm rounded-4">
+
+                <div class="card-body p-0">
+
+                    <div class="table-responsive">
+
+                        <table class="table table-hover align-middle mb-0">
+
+                            <thead>
+                                <tr>
+                                    <th class="px-4">Email</th>
+                                    <th>Телефон</th>
+                                    <th>Статус</th>
+                                    <th class="text-end px-4">Действие</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+
+                                {% for user in users %}
+
+                                    <tr>
+
+                                        <td class="px-4">
+                                            {{ user.email }}
+                                        </td>
+
+                                        <td>
+                                            {{ user.phone_number|default:"—" }}
+                                        </td>
+
+                                        <td>
+                                            {% if user.is_active %}
+                                                <span class="badge text-bg-success">
+                                                    Активен
+                                                </span>
+                                            {% else %}
+                                                <span class="badge text-bg-secondary">
+                                                    Заблокирован
+                                                </span>
+                                            {% endif %}
+                                        </td>
+
+                                        <td class="text-end px-4">
+
+                                            {% if user.is_active %}
+
+                                                <form
+                                                    method="post"
+                                                    action="{% url 'user_block' user.pk %}"
+                                                    class="d-inline"
+                                                >
+                                                    {% csrf_token %}
+
+                                                    <button
+                                                        type="submit"
+                                                        class="btn btn-outline-danger btn-sm"
+                                                    >
+                                                        Заблокировать
+                                                    </button>
+                                                </form>
+
+                                            {% else %}
+
+                                                <span class="text-muted">
+                                                    Заблокирован
+                                                </span>
+
+                                            {% endif %}
+
+                                        </td>
+
+                                    </tr>
+
+                                {% empty %}
+
+                                    <tr>
+                                        <td colspan="4" class="text-center py-4 text-muted">
+                                            Пользователей нет
+                                        </td>
+                                    </tr>
+
+                                {% endfor %}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

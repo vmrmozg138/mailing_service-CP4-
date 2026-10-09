@@ -1,0 +1,36 @@
+<!-- distribution/detail.html -->
+
+<h1>Рассылка #{{ object.pk }}</h1>
+<p>Статус: {{ object.get_status_display }}</p>
+<p>Начало: {{ object.start_time }}</p>
+<p>Окончание: {{ object.end_time }}</p>
+
+<!-- Кнопка ручной отправки -->
+<form method="post" action="{% url 'distribution-send' object.pk %}">
+    {% csrf_token %}
+    <button type="submit"
+            onclick="return confirm('Запустить рассылку вручную?')">
+        🚀 Отправить рассылку
+    </button>
+</form>
+
+<!-- История отправок -->
+<h2>Попытки отправки</h2>
+<table>
+    <tr>
+        <th>Получатель</th>
+        <th>Статус</th>
+        <th>Ошибка</th>
+        <th>Время</th>
+    </tr>
+    {% for attempt in object.send_attempts.all %}
+    <tr>
+        <td>{{ attempt.recipient }}</td>
+        <td>{{ attempt.get_status_display }}</td>
+        <td>{{ attempt.error_message|default:"—" }}</td>
+        <td>{{ attempt.sent_at }}</td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="4">Отправок ещё не было</td></tr>
+    {% endfor %}
+</table>
