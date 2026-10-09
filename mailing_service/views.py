@@ -3,13 +3,14 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.cache import cache
 from django.db.models import Count, Q
 from django.shortcuts import get_object_or_404, redirect
+from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.cache import cache_page
-from django.views.generic import CreateView, ListView, TemplateView
+from django.views.generic import CreateView, ListView, TemplateView, FormView
 
-from .forms import DistributionForm, MessageForm, RecipientForm
+from .forms import DistributionForm, MessageForm, RecipientForm, DistributionWithMessageForm
 from .mixins import ManagerRequiredMixin
 from .models import Distribution, Distribution_Attempt, Message, Recipient
 
@@ -37,31 +38,18 @@ class MainPageView(TemplateView):
         return context
 
 
-class DistrbutionCreateView(LoginRequiredMixin, CreateView):
-    template_name = "mailing_service/create_distribution.html"
-    model = Distribution
-    form_class = DistributionForm
+class DistrbutionCreateView(LoginRequiredMixin, FormView):
+    template_name = 'mailing_service/create_distribution.html'
+    form_class = DistributionWithMessageForm
+    success_url = reverse_lazy('mailing_service:distributions')
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs["user"] = self.request.user
+        kwargs['user'] = self.request.user
         return kwargs
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-
-        context["messages_count"] = Message.objects.filter(
-            owner=self.request.user
-        ).count()
-
-        context["recipients_count"] = Recipient.objects.filter(
-            owner=self.request.user
-        ).count()
-
-        return context
-
     def form_valid(self, form):
-        form.instance.owner = self.request.user
+        form.save(user=self.request.user)
         return super().form_valid(form)
 
 

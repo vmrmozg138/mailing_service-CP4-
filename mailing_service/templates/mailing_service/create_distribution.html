@@ -1,99 +1,151 @@
 {% extends 'mailing_service/base.html' %}
 
 {% block content %}
-
 <div class="container py-5">
     <div class="row justify-content-center">
-        <div class="col-md-8 col-lg-7">
+        <div class="col-lg-8 col-xl-7">
 
-            <div class="card border-0 shadow-sm rounded-4">
+            <div class="d-flex align-items-center mb-4">
+                <div>
+                    <h1 class="h3 mb-1">Создание рассылки</h1>
+                    <p class="text-muted mb-0">
+                        Подготовьте письмо и выберите получателей.
+                    </p>
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-sm">
                 <div class="card-body p-4 p-md-5">
-
-                    <h1 class="card-title mb-4">
-                        Создание рассылки
-                    </h1>
 
                     <form method="post">
                         {% csrf_token %}
 
                         {% if form.non_field_errors %}
-                            <div class="alert alert-danger" role="alert">
+                            <div class="alert alert-danger">
                                 {{ form.non_field_errors }}
                             </div>
                         {% endif %}
 
-                        <div class="mb-4">
-                            <label
-                                for="{{ form.start_time.id_for_label }}"
-                                class="form-label fw-semibold"
-                            >
-                                Время начала
+                        <h2 class="h5 mb-3">
+                            <i class="bi bi-envelope"></i>
+                            Сообщение
+                        </h2>
+
+                        <div class="mb-3">
+                            <label for="{{ form.message_topic.id_for_label }}"
+                                   class="form-label">
+                                {{ form.message_topic.label }}
                             </label>
 
-                            {{ form.start_time }}
+                            {{ form.message_topic }}
 
-                            {% if form.start_time.errors %}
-                                <div class="text-danger small mt-2">
-                                    {{ form.start_time.errors }}
+                            {% for error in form.message_topic.errors %}
+                                <div class="text-danger small mt-1">
+                                    {{ error }}
                                 </div>
-                            {% endif %}
+                            {% endfor %}
                         </div>
 
                         <div class="mb-4">
-                            <label
-                                for="{{ form.end_time.id_for_label }}"
-                                class="form-label fw-semibold"
-                            >
-                                Время окончания
+                            <label for="{{ form.message_content.id_for_label }}"
+                                   class="form-label">
+                                {{ form.message_content.label }}
                             </label>
 
-                            {{ form.end_time }}
+                            {{ form.message_content }}
 
-                            {% if form.end_time.errors %}
-                                <div class="text-danger small mt-2">
-                                    {{ form.end_time.errors }}
+                            {% for error in form.message_content.errors %}
+                                <div class="text-danger small mt-1">
+                                    {{ error }}
                                 </div>
-                            {% endif %}
+                            {% endfor %}
                         </div>
 
-                        <div class="mb-4">
-                            <label
-                                for="{{ form.message.id_for_label }}"
-                                class="form-label fw-semibold"
-                            >
-                                Сообщение
-                            </label>
+                        <hr class="my-4">
 
-                            {{ form.message }}
-
-                            {% if form.message.errors %}
-                                <div class="text-danger small mt-2">
-                                    {{ form.message.errors }}
-                                </div>
-                            {% endif %}
-                        </div>
+                        <h2 class="h5 mb-3">
+                            <i class="bi bi-people"></i>
+                            Получатели
+                        </h2>
 
                         <div class="mb-4">
-                            <label
-                                for="{{ form.recipients.id_for_label }}"
-                                class="form-label fw-semibold"
-                            >
-                                Получатели
+                            <label for="{{ form.recipients.id_for_label }}"
+                                   class="form-label">
+                                {{ form.recipients.label }}
                             </label>
 
                             {{ form.recipients }}
 
-                            {% if form.recipients.errors %}
-                                <div class="text-danger small mt-2">
-                                    {{ form.recipients.errors }}
+                            <div class="form-text">
+                                Для выбора нескольких получателей
+                                удерживайте Ctrl (Windows).
+                            </div>
+
+                            {% for error in form.recipients.errors %}
+                                <div class="text-danger small mt-1">
+                                    {{ error }}
                                 </div>
-                            {% endif %}
+                            {% endfor %}
                         </div>
 
-                        <button type="submit" class="btn btn-primary w-100 py-2">
-                            Создать рассылку
-                        </button>
+                        <hr class="my-4">
 
+                        <h2 class="h5 mb-3">
+                            <i class="bi bi-clock"></i>
+                            Время отправки
+                        </h2>
+
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="{{ form.start_time.id_for_label }}"
+                                       class="form-label">
+                                    {{ form.start_time.label }}
+                                </label>
+
+                                {{ form.start_time }}
+
+                                {% for error in form.start_time.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {{ error }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="{{ form.end_time.id_for_label }}"
+                                       class="form-label">
+                                    {{ form.end_time.label }}
+                                </label>
+
+                                {{ form.end_time }}
+
+                                {% for error in form.end_time.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {{ error }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="alert alert-light border mt-4 mb-4">
+                            <i class="bi bi-info-circle"></i>
+                            Рассылка будет создана со статусом
+                            «Создана». Отправка разрешена только
+                            в установленный временной период.
+                        </div>
+
+                        <div class="d-flex flex-wrap gap-2">
+                            <button type="submit"
+                                    class="btn btn-primary">
+                                <i class="bi bi-send"></i>
+                                Создать рассылку
+                            </button>
+
+                            <a href="{% url 'mailing_service:distributions' %}"
+                               class="btn btn-outline-secondary">
+                                Отмена
+                            </a>
+                        </div>
                     </form>
 
                 </div>
@@ -102,5 +154,5 @@
         </div>
     </div>
 </div>
-
 {% endblock %}
+```
